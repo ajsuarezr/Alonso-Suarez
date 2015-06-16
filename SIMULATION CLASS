@@ -1,0 +1,96 @@
+import java.io.File;
+import java.util.Scanner;
+
+public class Simulation {
+    public EventHeap h;
+	double now;
+	private Scanner contenido;
+
+	public Machine m = new Machine();
+	public Repairman r = new Repairman();
+	public User u = new User();
+	
+	public int tipoevento;
+	public double lapso;
+	public Simulation() {
+	
+		h = new EventHeap(10000);
+		now = 0;
+	}
+
+	public void abrirarchivo ()
+	{
+	
+		try {
+		contenido = new Scanner(new File ("c:/alonso/maestria/SO/Simulation/inputtrace.txt"));
+	}
+	catch ( Exception e)
+	{
+		System.out.println("Input trace no encontrado en la ruta indicada");
+		}
+	}
+
+	
+	public void scheduleEvent(Event e) {
+		h.insert(e);
+	}
+	
+	public void setup() {
+		
+		Event userEvent = new Event();
+		userEvent.setHandler(u);
+		userEvent.setType(userCheck);
+		userEvent.setTime(60);
+		scheduleEvent(userEvent);
+		
+		while ( contenido.hasNext() )
+		{
+			
+			lapso = Double.parseDouble(contenido.next());
+			tipoevento = Integer.parseInt(contenido.next());
+			maxtimepr = lapso;
+
+		switch (tipoevento)
+		{
+		case 1:
+		case 2:
+			
+			Event machineEvent = new Event();
+			machineEvent.setHandler(m);
+			machineEvent.setType(tipoevento);
+			machineEvent.setTime(lapso);
+			scheduleEvent(machineEvent);
+			break;
+		case 3 :
+		case 4 :
+			Event machineEvent2 = new Event();
+			machineEvent2.setHandler(r);
+			machineEvent2.setType(tipoevento);
+			machineEvent2.setTime(lapso);
+			scheduleEvent(machineEvent2);
+		break;
+		default :
+			System.out.println("Evento errado "); 
+			break;
+		}
+		}
+		
+		
+		return;
+	}
+	
+	public void run(double maxTime) {
+		while (!h.isEmpty() && h.peek().getTime()<=maxTime) {
+			Event nextEvent = h.remove();
+			now = nextEvent.getTime();
+			nextEvent.getHandler().respondToEvent(nextEvent, this);
+		}
+	}
+	// events
+	public final int working = 1;
+	public final int failure = 2;
+	public final int startRepair = 3;
+	public final int finishRepair = 4;
+	public final int userCheck = 5;
+    public double maxtimepr = 0;  // VARIABLE QUE CONTROLA EL TIEMPO MAXIMO DE EJECUCION
+}
