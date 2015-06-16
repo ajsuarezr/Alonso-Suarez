@@ -1,0 +1,27 @@
+
+public class Repairman implements EventHandler {
+
+	double MTTR;
+	double MTTRvariance;
+	
+	public Repairman() {
+		MTTR = 10.0;
+		MTTRvariance = 2.0;
+	}
+	
+	
+	@Override
+	public void respondToEvent(Event e, Simulation s) {
+		if (e.getType()==s.startRepair) {
+			System.out.println(e.getTime()+" starting repair");
+			s.m.working=false;
+			return;
+		}
+		if (e.getType()==s.finishRepair) {
+			System.out.println(e.getTime()+" finishing repair");
+			s.m.working=true;
+			return;
+		}
+	}
+
+}
