@@ -1,0 +1,7 @@
+data = read.csv(file.choose(),T)
+attach(data)
+repairf=subset(tiempo, estado %in% c("repair") & evento %in% c("finishing"))
+repairs=subset(tiempo, estado %in% c("repair") & evento %in% c("starting"))
+tiempoSprom=0
+for ( i in 1:NROW(repairs)) { tiemposprom[i]= repairf[i] - repairs[i]}
+mean(tiemposprom)
